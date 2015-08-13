@@ -47,15 +47,16 @@
            (fn [screen entities]
              (when
                (contains? valid-controls (:key screen))
-               (let [
-                     key (:key screen)
-                     move (fn [player] (cond
-                                         (= key (key-code :dpad-right))
-                                         (add-to player :x 8)
-                                         (= key (key-code :dpad-left))
-                                         (add-to player :x -8)))
-                     entities (->> entities (map-if player? move))
-                     ]
+               (let [key (:key screen)]
+                 ; update inputs state
+                 (cond
+                   (= key (key-code :dpad-right))
+                   (swap! inputs assoc-in [:right] true)
+                   (= key (key-code :dpad-left))
+                   (swap! inputs assoc-in [:left] true)
+                   (= key (key-code :space))
+                   (swap! inputs assoc-in [:fire] true)
+                   )
 
                  entities)
                )))
