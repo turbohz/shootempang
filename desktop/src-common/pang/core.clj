@@ -2,7 +2,7 @@
   (:require [play-clj.core :refer :all]
             [play-clj.ui :refer :all]
             [play-clj.g2d :refer :all]
-            [clojure.pprint :refer [pprint]]))
+            [pang.input :refer [handle-key-up handle-key-down]]))
 
 (defn add-to [e k v] (assoc e k (+ (k e) v)))
 
@@ -12,12 +12,7 @@
                  )))
   )
 
-(def inputs (atom {:left false :right false :fire false}))
-(defn print-inputs [& args] (clojure.pprint/pprint @inputs))
-(add-watch inputs :watcher print-inputs)
-
 (defn player? [e] (= :player (:type e)))
-(def valid-controls #{(key-code :space) (key-code :dpad-left) (key-code :dpad-right)})
 
 (defscreen main-screen
 
@@ -45,39 +40,15 @@
 
            :on-key-down
            (fn [screen entities]
-             (when
-               (contains? valid-controls (:key screen))
-               (let [key (:key screen)]
-                 ; update inputs state
-                 (cond
-                   (= key (key-code :dpad-right))
-                   (swap! inputs assoc-in [:right] true)
-                   (= key (key-code :dpad-left))
-                   (swap! inputs assoc-in [:left] true)
-                   (= key (key-code :space))
-                   (swap! inputs assoc-in [:fire] true)
-                   )
-
-                 entities)
-               ))
+             (handle-key-down (:key screen))
+             entities
+             )
 
            :on-key-up
            (fn [screen entities]
-             (when
-               (contains? valid-controls (:key screen))
-               (let [key (:key screen)]
-                 ; update inputs state
-                 (cond
-                   (= key (key-code :dpad-right))
-                   (swap! inputs assoc-in [:right] false)
-                   (= key (key-code :dpad-left))
-                   (swap! inputs assoc-in [:left] false)
-                   (= key (key-code :space))
-                   (swap! inputs assoc-in [:fire] false)
-                   )
-
-                 entities)
-               ))
+             (handle-key-up (:key screen))
+             entities
+             )
 
            )
 
