@@ -14,7 +14,7 @@
 (def inputs (atom {:left false :right false :fire false}))
 
 (defn player? [e] (= :player (:type e)))
-(def valid-controls #{(key-code :dpad-left) (key-code :dpad-right)})
+(def valid-controls #{(key-code :space) (key-code :dpad-left) (key-code :dpad-right)})
 
 (defscreen main-screen
 
