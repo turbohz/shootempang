@@ -8,8 +8,6 @@
 (def start {:x 0 :y 0 :width 32 :height 32 :type :player})
 (defn ? [e] (= :player (:type e)))
 
-(defn add-to [e k v] (assoc e k (+ (k e) v)))
-
 (defn create [tiles]
   "Returns a player entity, extracted from the provided tileset"
   (-> tiles
