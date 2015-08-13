@@ -1,8 +1,10 @@
 (ns pang.core
-  (:require [play-clj.core :refer :all]
-            [play-clj.ui :refer :all]
-            [play-clj.g2d :refer :all]
-            [pang.input :refer [handle-key-up handle-key-down inputs]]))
+  (:require
+    [play-clj.core :refer :all]
+    [play-clj.ui :refer :all]
+    [play-clj.g2d :refer :all]
+    [pang.input :refer [handle-key-up handle-key-down]]
+    [pang.entity.player :as player]))
 
 (defn add-to [e k v] (assoc e k (+ (k e) v)))
 
@@ -17,22 +19,6 @@
   (if (< (:x e) 0) (assoc-in e [:x] 0) e)
   )
 
-(defn move-player [p]
-  "Updates player position according to current inputs"
-  (reduce
-    (fn [p [k v]]
-      (if v
-        (within-bounds (case k
-                         :right (add-to p :x 8)
-                         :left (add-to p :x -8)
-                         p))
-        p)
-      )
-    p
-    @inputs))
-
-(defn player? [e] (= :player (:type e)))
-
 (defscreen main-screen
 
            :on-show
@@ -41,9 +27,7 @@
              (let [
                    sheet (texture "tiles.png")
                    tiles (texture! sheet :split 32 32)
-
-                   player (texture (aget tiles 0 0))
-                   player (assoc player :x 0 :y 0 :width 32 :height 32 :type :player)
+                   player (player/create tiles)
                    meteor (texture (aget tiles 1 0))
                    meteor (assoc meteor :x 300 :y 300 :width 32 :height 32 :type :meteor)
                    ]
@@ -54,7 +38,7 @@
            :on-render
            (fn [screen entities]
              (clear!)
-             (let [entities (->> entities (map-if player? move-player))]
+             (let [entities (->> entities (map-if player/? #(-> % player/move within-bounds)))]
                (render! screen entities))
              )
 
