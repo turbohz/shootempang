@@ -1,7 +1,9 @@
 (ns pang.entity.player
   (:require
     [pang.input :refer [inputs]]
-    [play-clj.g2d :refer [texture]]))
+    [pang.util :as util]
+    [play-clj.g2d :refer [texture]]
+    ))
 
 (def start {:x 0 :y 0 :width 32 :height 32 :type :player})
 (defn ? [e] (= :player (:type e)))
@@ -24,8 +26,8 @@
     (fn [p [k v]]
       (if v
         (case k
-          :right (add-to p :x 8)
-          :left (add-to p :x -8)
+          :right (util/add-to p :x 8)
+          :left (util/add-to p :x -8)
           p)
         p)
       )

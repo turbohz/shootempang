@@ -4,20 +4,8 @@
     [play-clj.ui :refer :all]
     [play-clj.g2d :refer :all]
     [pang.input :refer [handle-key-up handle-key-down]]
-    [pang.entity.player :as player]))
-
-(defn add-to [e k v] (assoc e k (+ (k e) v)))
-
-(defn map-if [c f xs]
-  (->> xs (map (fn [x]
-                 (if (c x) (f x) x)
-                 )))
-  )
-
-(defn within-bounds [e]
-  "Forces the entity coordinates to be within screen bounds"
-  (if (< (:x e) 0) (assoc-in e [:x] 0) e)
-  )
+    [pang.entity.player :as player]
+    [pang.util :as util]))
 
 (defscreen main-screen
 
@@ -38,7 +26,7 @@
            :on-render
            (fn [screen entities]
              (clear!)
-             (let [entities (->> entities (map-if player/? #(-> % player/move within-bounds)))]
+             (let [entities (->> entities (util/map-if player/? #(-> % player/move util/within-bounds)))]
                (render! screen entities))
              )
 
