@@ -1,7 +1,8 @@
 (ns pang.core
   (:require [play-clj.core :refer :all]
             [play-clj.ui :refer :all]
-            [play-clj.g2d :refer :all]))
+            [play-clj.g2d :refer :all]
+            [pang.input :refer [handle-key-up handle-key-down inputs]]))
 
 (defn add-to [e k v] (assoc e k (+ (k e) v)))
 
@@ -11,8 +12,26 @@
                  )))
   )
 
+(defn within-bounds [e]
+  "Forces the entity coordinates to be within screen bounds"
+  (if (< (:x e) 0) (assoc-in e [:x] 0) e)
+  )
+
+(defn move-player [p]
+  "Updates player position according to current inputs"
+  (reduce
+    (fn [p [k v]]
+      (if v
+        (within-bounds (case k
+                         :right (add-to p :x 8)
+                         :left (add-to p :x -8)
+                         p))
+        p)
+      )
+    p
+    @inputs))
+
 (defn player? [e] (= :player (:type e)))
-(def valid-controls #{(key-code :dpad-left) (key-code :dpad-right)})
 
 (defscreen main-screen
 
@@ -35,25 +54,23 @@
            :on-render
            (fn [screen entities]
              (clear!)
-             (render! screen entities)
+             (let [entities (->> entities (map-if player? move-player))]
+               (render! screen entities))
              )
 
            :on-key-down
            (fn [screen entities]
-             (when
-               (contains? valid-controls (:key screen))
-               (let [
-                     key (:key screen)
-                     move (fn [player] (cond
-                                         (= key (key-code :dpad-right))
-                                         (add-to player :x 8)
-                                         (= key (key-code :dpad-left))
-                                         (add-to player :x -8)))
-                     entities (->> entities (map-if player? move))
-                     ]
+             (handle-key-down (:key screen))
+             entities
+             )
 
-                 entities)
-               )))
+           :on-key-up
+           (fn [screen entities]
+             (handle-key-up (:key screen))
+             entities
+             )
+
+           )
 
 (defgame pang-game
          :on-create
