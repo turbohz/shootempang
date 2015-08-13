@@ -59,7 +59,27 @@
                    )
 
                  entities)
-               )))
+               ))
+
+           :on-key-up
+           (fn [screen entities]
+             (when
+               (contains? valid-controls (:key screen))
+               (let [key (:key screen)]
+                 ; update inputs state
+                 (cond
+                   (= key (key-code :dpad-right))
+                   (swap! inputs assoc-in [:right] false)
+                   (= key (key-code :dpad-left))
+                   (swap! inputs assoc-in [:left] false)
+                   (= key (key-code :space))
+                   (swap! inputs assoc-in [:fire] false)
+                   )
+
+                 entities)
+               ))
+
+           )
 
 (defgame pang-game
          :on-create
