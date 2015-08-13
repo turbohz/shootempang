@@ -1,7 +1,8 @@
 (ns pang.core
   (:require [play-clj.core :refer :all]
             [play-clj.ui :refer :all]
-            [play-clj.g2d :refer :all]))
+            [play-clj.g2d :refer :all]
+            [clojure.pprint :refer [pprint]]))
 
 (defn add-to [e k v] (assoc e k (+ (k e) v)))
 
@@ -12,6 +13,8 @@
   )
 
 (def inputs (atom {:left false :right false :fire false}))
+(defn print-inputs [& args] (clojure.pprint/pprint @inputs))
+(add-watch inputs :watcher print-inputs)
 
 (defn player? [e] (= :player (:type e)))
 (def valid-controls #{(key-code :space) (key-code :dpad-left) (key-code :dpad-right)})
