@@ -6,7 +6,27 @@
     [pang.input :refer [handle-key-up handle-key-down]]
     [pang.entity.player :as player]
     [pang.entity.enemy :as enemy]
-    [pang.util :as util]))
+    [pang.util :as util]
+    [play-clj.math :refer [vector-2 vector-2!]]
+    ))
+
+
+(defn update-velocity [e]
+  (assoc-in e [:velocity] (vector-2! (:velocity e) :add (:acceleration e))))
+
+(defn update-position [e]
+  (let [
+        position (vector-2 (:x e) (:y e))
+        position (vector-2! position :add (:velocity e))]
+    (-> e (assoc-in [:x] (.x position)) (assoc-in [:y] (.y position)))))
+
+(defn animate [screen entities]
+  (map (fn [e]
+         (if (enemy/? e)
+           (-> e update-velocity update-position)
+           e)
+         )
+       entities))
 
 (defscreen main-screen
 
@@ -26,7 +46,11 @@
            :on-render
            (fn [screen entities]
              (clear!)
-             (let [entities (->> entities (util/map-if player/? #(-> % player/move util/within-bounds)))]
+             (let [
+                   entities (->> entities (util/map-if player/? #(-> % player/move util/within-bounds)))
+                   entities (animate screen entities)
+                   ]
+
                (render! screen entities))
              )
 
