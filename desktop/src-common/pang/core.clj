@@ -21,11 +21,7 @@
     (-> e (assoc-in [:x] (.x position)) (assoc-in [:y] (.y position)))))
 
 (defn animate [screen entities]
-  (map (fn [e]
-         (if (enemy/? e)
-           (-> e update-velocity update-position)
-           e)
-         )
+  (map (fn [e] (-> e update-velocity update-position))
        entities))
 
 (defscreen main-screen
