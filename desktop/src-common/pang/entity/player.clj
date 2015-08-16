@@ -29,7 +29,9 @@
 (defn move [e]
   "Updates player physics according to current inputs"
   (let [
+        ; start with a 0 vector
         v (vector-2 0,0)
+        ; mutate v according to input
         v (reduce
             (fn [v [key pressed?]]
               (if pressed?
@@ -37,11 +39,10 @@
                   :right (x! v 4)
                   :left (x! v -4)
                   v)
-                v
-                ))
+                v))
             v
             @inputs)
         ]
-    ; update entity velocity vector
+    ; finally, update entity velocity
     (assoc-in e [:velocity] v)
   ))
