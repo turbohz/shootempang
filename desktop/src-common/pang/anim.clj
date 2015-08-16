@@ -20,10 +20,14 @@
     v
     ))
 
+(defn rebound-velocity-vector [v]
+  (y! v 8)
+  )
+
 (defn enforce-bounds [screen e]
   (cond
     (or (< (:x e) 0) (> (:x e) (width screen))) (assoc-in e [:velocity] (reflect-vector-component :x (:velocity e)))
-    (or (< (:y e) 0) (> (:y e) (height screen))) (assoc-in e [:velocity] (reflect-vector-component :y (:velocity e)))
+    (or (< (:y e) 0) (> (:y e) (height screen))) (assoc-in e [:velocity] (rebound-velocity-vector (:velocity e)))
     :else e))
 
 (defn move-player [e]
