@@ -2,9 +2,10 @@
   (:require
     [play-clj.core :refer :all]
     [pang.input :refer [inputs]]
-    [pang.util :as util]
+    [pang.util :refer [dig]]
     [play-clj.g2d :refer [texture]]
     [play-clj.math :refer [vector-2]]
+    [pang.settings :refer [settings]]
     ))
 
 (def start {
@@ -36,8 +37,8 @@
             (fn [v [key pressed?]]
               (if pressed?
                 (case key
-                  :right (x! v 4)
-                  :left (x! v -4)
+                  :right (x! v (dig settings :player :x-speed))
+                  :left (x! v (- (dig settings :player :x-speed)))
                   v)
                 v))
             v
