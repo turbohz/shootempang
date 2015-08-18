@@ -2,16 +2,18 @@
   (:require
     [play-clj.g2d :refer [texture]]
     [play-clj.math :refer [vector-2]]
+    [pang.settings :refer [settings]]
+    [pang.util :refer [dig]]
     ))
 
 (def start {
-            :x 300
-            :y 300
-            :width 32
-            :height 32
-            :type :enemy
-            :velocity (vector-2 2,0)
-            :acceleration (vector-2 0,-0.1)
+            :x            300
+            :y            300
+            :width        32
+            :height       32
+            :type         :enemy
+            :velocity     (vector-2 (dig settings :enemy :x-speed), 0)
+            :acceleration (vector-2 0, (:gravity settings))
             })
 (defn ? [e] (= :enemy (:type e)))
 
