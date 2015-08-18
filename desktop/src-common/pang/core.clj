@@ -5,7 +5,10 @@
     [play-clj.g2d :refer :all]
     [pang.input :refer [handle-key-up handle-key-down]]
     [pang.entity.player :as player]
-    [pang.util :as util]))
+    [pang.entity.enemy :as enemy]
+    [pang.util :as util]
+    [pang.anim :refer [animate]]
+    ))
 
 (defscreen main-screen
 
@@ -16,19 +19,16 @@
                    sheet (texture "tiles.png")
                    tiles (texture! sheet :split 32 32)
                    player (player/create tiles)
-                   meteor (texture (aget tiles 1 0))
-                   meteor (assoc meteor :x 300 :y 300 :width 32 :height 32 :type :meteor)
+                   enemy (enemy/create tiles)
                    ]
-               [player meteor]
+               [player enemy]
                )
              )
 
            :on-render
            (fn [screen entities]
              (clear!)
-             (let [entities (->> entities (util/map-if player/? #(-> % player/move util/within-bounds)))]
-               (render! screen entities))
-             )
+             (render! screen (animate screen entities)))
 
            :on-key-down
            (fn [screen entities]
