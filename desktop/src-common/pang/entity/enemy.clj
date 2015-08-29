@@ -4,6 +4,7 @@
     [play-clj.math :refer [vector-2]]
     [pang.settings :refer [settings]]
     [pang.util :refer [dig]]
+    [pang.tiles :refer [tiles]]
     ))
 
 (def start {
@@ -17,9 +18,9 @@
             })
 (defn ? [e] (= :enemy (:type e)))
 
-(defn create [tiles]
-  "Returns entity, extracted from the provided tileset"
-  (-> tiles
+(defn create []
+  "Returns entity, extracted from the game tileset"
+  (-> @tiles
       (aget 1 0)
       texture
       (merge start))

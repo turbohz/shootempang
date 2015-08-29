@@ -3,6 +3,7 @@
     [play-clj.core :refer :all]
     [pang.input :refer [inputs]]
     [pang.util :refer [dig]]
+    [pang.tiles :refer [tiles]]
     [play-clj.g2d :refer [texture]]
     [play-clj.math :refer [vector-2]]
     [pang.settings :refer [settings]]
@@ -19,9 +20,9 @@
             })
 (defn ? [e] (= :player (:type e)))
 
-(defn create [tiles]
-  "Returns a player entity, extracted from the provided tileset"
-  (-> tiles
+(defn create []
+  "Returns a player entity, extracted from the game tileset"
+  (-> @tiles
       (aget 0 0)
       texture
       (merge start))

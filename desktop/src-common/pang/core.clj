@@ -8,6 +8,7 @@
     [pang.entity.enemy :as enemy]
     [pang.util :as util]
     [pang.anim :refer [animate]]
+    [pang.tiles :refer [tiles]]
     ))
 
 (defscreen main-screen
@@ -15,11 +16,10 @@
            :on-show
            (fn [screen entities]
              (update! screen :renderer (stage))
+             (pang.tiles/load "tiles.png")
              (let [
-                   sheet (texture "tiles.png")
-                   tiles (texture! sheet :split 32 32)
-                   player (player/create tiles)
-                   enemy (enemy/create tiles)
+                   player (player/create)
+                   enemy (enemy/create)
                    ]
                [player enemy]
                )
